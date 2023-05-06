@@ -1,21 +1,31 @@
 package com.example.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 public class AdminController {
-	
-	@Autowired
-	private AdminRepository adminRepository ;
+
+	private  final AuthenticationService service;
+
+	private final AdminRepository adminRepository ;
 	
 	// get admin detail by admin_name
 	
 	@GetMapping("/admin/{name}")
-	public Admin getAdminDetails(@PathVariable("name") String name){
-		return this.adminRepository.findByName(name);
+	public Optional<Admin> getAdminDetails(@PathVariable("name") String name){
+		return adminRepository.findByName(name);
+	}
+
+	@PostMapping("/admin/")
+	public ResponseEntity<AuthenticateResponce> authenticate(
+			@RequestBody AuthenticationRequest request
+	) {
+		return ResponseEntity.ok((AuthenticateResponce) service.authenticate(request));
 	}
 
 }
