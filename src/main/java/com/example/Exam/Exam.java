@@ -1,9 +1,11 @@
 package com.example.Exam;
 
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.example.subject.Subject;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Exam {

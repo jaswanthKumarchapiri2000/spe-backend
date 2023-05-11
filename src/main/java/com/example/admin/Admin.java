@@ -1,13 +1,19 @@
 package com.example.admin;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
-public class Admin {
+@Data
+public class Admin implements UserDetails {
       @Id
       @GeneratedValue(strategy = GenerationType.IDENTITY)
 	  private int id;
@@ -34,8 +40,47 @@ public class Admin {
 		this.name = name;
 	}
 
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<String> roles= new ArrayList<>();
+		roles.add("Admin");
+
+		System.out.println(roles);
+
+
+		List<SimpleGrantedAuthority> simpleGrantedAuthorityList=roles.stream().map(role->new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+
+		System.out.println(simpleGrantedAuthorityList);
+		return simpleGrantedAuthorityList;
+	}
+
 	public String getPassword() {
 		return password;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.name;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 
 	public void setPassword(String password) {
